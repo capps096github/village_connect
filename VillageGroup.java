@@ -1,5 +1,9 @@
 import java.util.*;
 
+import javax.jms.*;
+
+import org.apache.activemq.ActiveMQConnectionFactory;
+
 public class VillageGroup {
     // name
     public String name;
@@ -48,7 +52,7 @@ public class VillageGroup {
 
     // Show group menu function, takes in the selected group and displays the menu
     // options
-    public void showMenu() {
+    public void showMenu() throws Exception {
 
         // group name
         String groupName = this.name;
@@ -69,11 +73,31 @@ public class VillageGroup {
         // curremnt user
         VillageUser currentUser = AppConstants.currentUser;
 
+        // Create a ConnectionFactory
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost");
+
+        // Create a Connection
+        Connection connection = connectionFactory.createConnection();
+        connection.start();
+
+        // Create a Session
+        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+
+        // Create the destination (Topic) that messages will be published to
+        Topic destination = session.createTopic(groupName);
+
+        // chat user
+        ChatUser chatUser = new ChatUser(currentUser.name, currentUser.password, session, destination);
+
         // logic for the menu
         if (choice == 1) {
             // view members
-            printMembers();
-            showMenu();
+            // printMembers();
+            // showMenu();
+
+            // print messages
+            // let the user send a message
+            chatUser.viewMessages(session, destination);
 
         } else if (choice == 2) {
             // print messages
@@ -92,9 +116,10 @@ public class VillageGroup {
             } else {
 
                 // let the user send a message
-                currentUser.sendMessage(this.name);
+                chatUser.sendMessage();
 
-                this.addMessage(message);
+                addMessage(message);
+
             }
 
         } else if (choice == 3) {
@@ -109,8 +134,8 @@ public class VillageGroup {
 
     // add message and print other messages
     public void addMessage(String message) {
-        this.messages.add(message);
-        this.printMessages();
+        messages.add(message);
+        printMessages();
     }
 
     // print members

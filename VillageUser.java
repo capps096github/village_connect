@@ -93,67 +93,22 @@ public class VillageUser implements Serializable {
 
     }
 
-    // send and receive messages via activemq
-    public void sendMessage(String groupName) {
-        try {
-            // Create a ConnectionFactory
-            ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost");
-
-            // Create a Connection
-            Connection connection = connectionFactory.createConnection();
-            connection.start();
-
-            // Create a Session
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-
-            // Create the destination (Topic) that messages will be published to
-            Topic destination = session.createTopic(groupName);
-
-            // Create a MessageProducer from the Session to the Topic or Queue
-            MessageProducer producer = session.createProducer(destination);
-            producer.setDeliveryMode(DeliveryMode.PERSISTENT);
-
-            // Ask user to type a message
-            Scanner scanner = new Scanner(System.in);
-            AppConstants.print("Type your message: ");
-            String messageText = scanner.nextLine();
-
-            // Create a messages
-            // String text = "Hello world! From: " + Thread.currentThread().getName() + " :
-            // ";
-            TextMessage message = session.createTextMessage(messageText);
-
-            // send the message using producer
-            producer.send(message);
-
-            // Clean up
-            session.close();
-            connection.close();
-            scanner.close();
-        } catch (Exception e) {
-            AppConstants.println("Caught: " + e, "red");
-            // e.printStackTrace();
-        }
-    }
-
-    public void viewMessages(String groupName) {
+    // public void viewMessages(String groupName) {
+    public void viewMessages(Session session, Topic destination) {
 
         try {
-            // Create a connection factory
-            ConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
 
-            // Create a connection
-            Connection connection = connectionFactory.createConnection();
-            connection.start();
+            MessageConsumer consumer = session.createConsumer(destination);
 
-            // Create a session
-            Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+            // Message message = consumer.receive(1000);
 
-            // Create the chat group topic
-            Topic chatTopic = session.createTopic(groupName);
-
-            // Create the message consumer
-            MessageConsumer consumer = session.createConsumer(chatTopic);
+            // if (message instanceof TextMessage) {
+            // TextMessage textMessage = (TextMessage) message;
+            // String text = textMessage.getText();
+            // System.out.println("Received: " + text);
+            // } else {
+            // System.out.println("Received: " + message);
+            // }
             consumer.setMessageListener(new MessageListener() {
                 public void onMessage(Message message) {
                     try {
@@ -165,9 +120,11 @@ public class VillageUser implements Serializable {
                             String messageText = textMessage.getText();
 
                             // print the message
-                            AppConstants.println("[" + time + "] " + sender + ": " + messageText, "green");
+                            AppConstants.println("[" + time + "] " + sender + ": " + messageText,
+                                    "green");
 
-                            AppConstants.println(name + " received a message: " + textMessage.getText(), "green");
+                            AppConstants.println(name + " received a message: " + textMessage.getText(),
+                                    "green");
                         }
                     } catch (JMSException e) {
                         e.printStackTrace();

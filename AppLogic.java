@@ -4,7 +4,7 @@ public class AppLogic {
 
     // login method, welcome the user and then asks them to either login or create
     // account
-    public static void start() {
+    public static void start() throws Exception {
         // welcome the user and then show them a menu to either login or create account
         // and then call respective functions for the VillageUser Object
 
@@ -49,7 +49,7 @@ public class AppLogic {
     }
 
     // menu
-    public static void mainMenu() {
+    public static void mainMenu() throws Exception {
 
         AppConstants.println("\nWhat would you like to do?\n", "white");
         AppConstants.println("1. View Village Groups");

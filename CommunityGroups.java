@@ -86,7 +86,7 @@ public class CommunityGroups {
         }
 
         // select a group
-        public static void selectGroup() {
+        public static void selectGroup() throws Exception{
                 Scanner scanner = new Scanner(System.in);
 
                 // Print the list of groups
