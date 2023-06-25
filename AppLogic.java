@@ -5,6 +5,7 @@ public class AppLogic {
     // login method, welcome the user and then asks them to either login or create
     // account
     public static void start() throws Exception {
+
         // welcome the user and then show them a menu to either login or create account
         // and then call respective functions for the VillageUser Object
 
@@ -51,9 +52,6 @@ public class AppLogic {
     // menu
     public static void mainMenu() throws Exception {
 
-        // initialize community groups first
-        CommunityGroups.initialize();
-
         // then show menu
         AppConstants.println("\nWhat would you like to do?\n", "white");
         AppConstants.println("1. View Village Groups");
@@ -71,6 +69,7 @@ public class AppLogic {
         } else if (choice == 2) {
             // Add the newly created group to the list
             CommunityGroups.addGroup();
+
         } else if (choice == 3) {
             // Exit the program1
             AppConstants.println("\nThank you for using Village Connect. Goodbye!");

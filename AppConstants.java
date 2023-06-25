@@ -6,7 +6,7 @@ public class AppConstants {
     // this will be stored in db/user.ser file
 
     public static final String USER_FILE_NAME = "db/users.ser";
-    public static final String GROUP_FILE_NAME = "db/groups.ser";
+    public static final String GROUP_FILE_NAME = "db/groups.txt";
 
     // broker url for ActiveMQ
     public static final String BROKER_URL = "tcp://localhost:61616";

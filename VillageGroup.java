@@ -1,11 +1,14 @@
-import java.io.Serializable;
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.util.*;
 
 import javax.jms.*;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-public class VillageGroup implements Serializable {
+public class VillageGroup implements Externalizable {
     // name
     public String name;
     // description
@@ -102,7 +105,7 @@ public class VillageGroup implements Serializable {
         } else if (choice == 2) {
             String message;
             do { // send a message
-                AppConstants.println("\n> Send a message to " + groupName);
+                AppConstants.println("\n\n> Send a message to " + groupName);
 
                 // let the user send a message
                 message = chatUser.sendMessage();
@@ -127,16 +130,16 @@ public class VillageGroup implements Serializable {
             AppConstants.println("\n> Waiting for other messages from " + groupName + "...");
 
             // tell user to type exit to go back to menu
-            AppConstants.println("\nCan't wait anymore? Type 'exit' to go back to group menu", "red");
-            String exit = scanner.next();
+            // AppConstants.println("\nCan't wait anymore? Type 'exit' to go back to group menu", "red");
+            // String exit = scanner.next();
 
             // if user types exit, go back to menu
-            if (exit.equalsIgnoreCase("exit")) {
-                showMenu();
-            } else {
-                AppConstants.println("\n> Still Waiting for other messages from " + groupName + "...");
+            // if (exit.equalsIgnoreCase("exit")) {
+            //     showMenu();
+            // } else {
+            //     AppConstants.println("\n> Still Waiting for other messages from " + groupName + "...");
 
-            }
+            // }
         } else if (choice == 4) {
             // leave group
             AppConstants.println("\n> Leaving " + groupName + " Group...\n\n");
@@ -187,6 +190,28 @@ public class VillageGroup implements Serializable {
         }
 
         System.out.println("\n");
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        // write the object
+        out.writeObject(this.name);
+        out.writeObject(this.description);
+        out.writeObject(this.members);
+        out.writeObject(this.messages);
+        out.writeObject(this.adminUsername);
+
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        // read the object
+        this.name = (String) in.readObject();
+        this.description = (String) in.readObject();
+        this.members = (ArrayList<String>) in.readObject();
+        this.messages = (ArrayList<String>) in.readObject();
+        this.adminUsername = (String) in.readObject();
+
     }
 
     //

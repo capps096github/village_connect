@@ -1,9 +1,28 @@
 import java.io.*;
 import java.util.*;
 
-public class CommunityGroups {
+public class CommunityGroupx {
 
-        public static List<VillageGroup> villageGroups = defaultGroups();
+        // public static List<VillageGroup> villageGroups = deserializeGroups();
+        public static List<VillageGroup> villageGroups = new ArrayList<>();
+
+        // init method to serialize default groups
+        public static void init() {
+                // check if file exists
+                File file = new File(AppConstants.GROUP_FILE_NAME);
+
+                if (file.exists()) {
+                        // deserialize groups
+                        villageGroups = deserializeGroups();
+                        printGroups(villageGroups);
+                } else {
+                        // serialize default groups
+                        serializeGroups(defaultGroups());
+                        printGroups(villageGroups);
+
+                }
+
+        }
 
         // random groups
         public static List<VillageGroup> defaultGroups() {
@@ -111,16 +130,7 @@ public class CommunityGroups {
 
                 int groupChoice = scanner.nextInt();
 
-                if (groupChoice == 0) {
-                        // Select the group
-                        // VillageGroup selectedGroup = villageGroups.get(groupChoice - 1);
-                        // // ! Update the group
-                        // CommunityGroups.updateGroup(selectedGroup);
-
-                        // go back to main menu
-                        AppConstants.println("\nGoing back to Main Menu...", "blue");
-                        AppLogic.mainMenu();
-                } else if (groupChoice >= 1 && groupChoice <= villageGroups.size()) {
+                if (groupChoice >= 1 && groupChoice <= villageGroups.size()) {
                         // Select the group
                         VillageGroup selectedGroup = villageGroups.get(groupChoice - 1);
 
@@ -135,11 +145,101 @@ public class CommunityGroups {
                         // Show the group menu
                         selectedGroup.showMenu();
 
+                } else if (groupChoice == 0) {
+                        // Select the group
+                        VillageGroup selectedGroup = villageGroups.get(groupChoice - 1);
+                        // ! Update the group
+                        CommunityGroups.updateGroup(selectedGroup);
+
+                        // go back to main menu
+                        AppConstants.println("\nGoing back to Main Menu...", "blue");
+                        AppLogic.mainMenu();
                 } else {
                         AppConstants.printError("Invalid choice!");
                         selectGroup();
                 }
 
+        }
+
+        // Serialization method to store user object
+        public static void serializeThisGroup(VillageGroup group) {
+                // empty grop list
+                List<VillageGroup> groups = villageGroups;
+
+                // check the villageGroups list if it is empty initialize it to a new liat and
+                // then add this grpop to it
+
+                // add the user to the list
+                groups.add(group);
+
+                try {
+                        FileOutputStream fileOut = new FileOutputStream(AppConstants.USER_FILE_NAME);
+                        ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+                        objectOut.writeObject(groups);
+                        objectOut.close();
+                        fileOut.close();
+                        AppConstants.println("Group serialized successfully.");
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+
+        }
+
+        // Serialization method to store user object
+        public static void serializeGroups(List<VillageGroup> villageGroups) {
+                AppConstants.println("Serializing Groups...", "blue");
+                try {
+                        FileOutputStream fileOut = new FileOutputStream(AppConstants.GROUP_FILE_NAME);
+
+                        ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+                        objectOut.writeObject(villageGroups);
+                        objectOut.close();
+                        AppConstants.printSuccess("Groups serialized successfully.");
+
+                        fileOut.close();
+                } catch (IOException e) {
+                        // e.printStackTrace();
+                        AppConstants.printError("> Error: Cannot serialize groups!");
+                }
+                AppConstants.println("\nNew groups...", "blue");
+                printAllGroups();
+
+        }
+
+        // Deserialization method to obtain user object
+        public static List<VillageGroup> deserializeGroups() {
+
+                // close any scanner instance before deserializing
+                Scanner scanner = new Scanner(System.in);
+                scanner.close();
+
+                try {
+                        FileInputStream fileIn = new FileInputStream(AppConstants.GROUP_FILE_NAME);
+                        ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+                        List<VillageGroup> desvillageGroups = (List<VillageGroup>) objectIn.readObject();
+                        objectIn.close();
+                        fileIn.close();
+                        return desvillageGroups;
+                } catch (IOException | ClassNotFoundException e) {
+                        // e.printStackTrace();
+                        // AppConstants.printError("> Error: Group File doesn't exist for
+                        // deserialization!");
+                        return new ArrayList<>();
+                }
+        }
+
+        // print all users
+        public static void printAllGroups() {
+
+                // check if list is empty
+                if (villageGroups == null || villageGroups.size() == 0) {
+                        AppConstants.printError("No groups found!\n");
+                } else {
+                        // print all users
+                        for (VillageGroup group : villageGroups) {
+                                AppConstants.println(group.toString(), "blue");
+                        }
+                }
         }
 
         public static void updateGroup(VillageGroup villageGroup) {
@@ -149,6 +249,8 @@ public class CommunityGroups {
                 // update the group
                 villageGroups.set(index, villageGroup);
 
+                // serialize the updated group
+                serializeGroups(villageGroups);
         }
 
 }
