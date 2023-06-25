@@ -46,7 +46,7 @@ public class VillageUser implements Serializable {
             // call the main menu
         } else {
             // User does not exist, create a new account
-            AppConstants.println("Account does not exist. Please create an account.", "red");
+            AppConstants.printError("Account does not exist. Please create an account.");
 
             // call create account method
             createAccount();
@@ -75,9 +75,9 @@ public class VillageUser implements Serializable {
         AppUsers.serializeUsers(newUser);
 
         // Print success message
-        AppConstants.println("Account created successfully!", "green");
+        AppConstants.println("\n> Account created successfully!", "green");
         // User exists
-        AppConstants.println("\n\nWelcome, " + newUser.name.toUpperCase() + " to VillageConnect!\n");
+        AppConstants.println("\n\n" + newUser.name.toUpperCase() + ", Welcome to VillageConnect!\n");
 
     }
 

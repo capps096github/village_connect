@@ -15,7 +15,7 @@ public class AppLogic {
         AppConstants.println("Login/Sign Up to continue:\n");
         AppConstants.println("1. Have an account? Login");
         AppConstants.println("2. Don't have an account? Sign Up");
-        AppConstants.println("3. Exit", "red");
+        AppConstants.println("3. Exit the program");
         AppConstants.print("\nEnter your choice: (1-3):  ");
 
         // get user input
@@ -58,7 +58,7 @@ public class AppLogic {
         AppConstants.println("\nWhat would you like to do?\n", "white");
         AppConstants.println("1. View Village Groups");
         AppConstants.println("2. Create a Village Group");
-        AppConstants.println("3. Log out", "red");
+        AppConstants.println("3. Log out");
 
         // Read the user's choice
         AppConstants.print("\nEnter your choice (1-3): ", "white");

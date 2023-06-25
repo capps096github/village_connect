@@ -22,7 +22,8 @@ public class AppUsers {
             fileOut.close();
             // AppConstants.println("User serialized successfully.");
         } catch (IOException e) {
-            e.printStackTrace();
+            AppConstants.printError("\n > Error: Can't serialize user!");
+
         }
 
         // AppConstants.println("\nNew User Account...", "blue");
@@ -42,14 +43,13 @@ public class AppUsers {
             return userList;
         } catch (IOException | ClassNotFoundException e) {
             // e.printStackTrace();
-            AppConstants.println("Error: User Account File doesn't exist!", "red");
+            AppConstants.printError("\n > Error: User Account File doesn't exist!");
             return new ArrayList<>();
         }
     }
 
     // get the current user from the list of users
     public static VillageUser getCurrentUser(String name, String password) {
-        List<VillageUser> userList = deserializeUsers();
 
         // check if list is empty
         if (userList == null || userList.size() == 0) {

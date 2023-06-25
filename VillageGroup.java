@@ -42,13 +42,17 @@ public class VillageGroup implements Serializable {
         if (!this.members.contains(userId)) {
             this.members.add(userId);
         }
+        // update the group
+        CommunityGroups.updateGroup(this);
     }
 
     // leave group removes user id from members list if they exist
-    public void removeUser(String userId) {
-        if (this.members.contains(userId)) {
-            this.members.remove(userId);
+    public void removeUser(String userName) {
+        if (this.members.contains(userName)) {
+            this.members.remove(userName);
         }
+        // update the group
+        CommunityGroups.updateGroup(this);
     }
 
     // Show group menu function, takes in the selected group and displays the menu
@@ -66,7 +70,8 @@ public class VillageGroup implements Serializable {
         AppConstants.println("1. View Members " + groupName);
         AppConstants.println("2. Send a Message to " + groupName);
         AppConstants.println("3. Listen to Messages from " + groupName);
-        AppConstants.println("4. Log Out");
+        AppConstants.println("4. Leave this " + groupName + " Group");
+        AppConstants.println("5. Go Back to Main Menu");
 
         // Read the user's choice
         AppConstants.print("\nEnter your choice (1-4): ", "white");
@@ -111,7 +116,7 @@ public class VillageGroup implements Serializable {
             // Clean up
             session.close();
             connection.close();
-            
+
             // go back to menu
             showMenu();
 
@@ -122,33 +127,52 @@ public class VillageGroup implements Serializable {
             chatUser.viewMessages();
 
             AppConstants.println("\n> Waiting for other messages from " + groupName + "...");
-            exitToMenu();
+
+            // tell user to type exit to go back to menu
+            AppConstants.println("\nCan't wait anymore? Type 'exit' to go back to group menu", "red");
+            String exit = scanner.next();
+
+            // if user types exit, go back to menu
+            if (exit.equals("exit")) {
+                showMenu();
+            } else {
+                AppConstants.println("\n> Still Waiting for other messages from " + groupName + "...");
+
+            }
         } else if (choice == 4) {
-            // exit
-            System.exit(0);
+            // leave group
+            AppConstants.println("\n> Leaving " + groupName + " Group...\n\n");
+
+            // remove user from group
+            removeUser(name);
+
+        } else if (choice == 5) {
+            // go back to main menu
+            AppConstants.println("\n> Going back to main menu...\n\n");
+            // close session and go to Menu
+            // Clean up
+            session.close();
+            connection.close();
+
+            // go back to main menu
+            AppLogic.mainMenu();
+
         } else {
-            AppConstants.println("Invalid choice!", "red");
+            AppConstants.printError("Invalid choice!");
+            // close session and go to Menu
+            // Clean up
+            session.close();
+            connection.close();
             showMenu();
         }
 
-    }
-
-    public void exitToMenu() throws Exception {
-        // tell user to type exit to go back to menu
-        AppConstants.println("\nCan't wait anymore? Type 'exit' to go back to group menu", "red");
-        String exit = scanner.next();
-
-        // if user types exit, go back to menu
-        if (exit.equals("exit")) {
-            showMenu();
-        } else {
-
-        }
     }
 
     // add message and print other messages
     public void addMessage(String message) {
         messages.add(message);
+        // update the group
+        CommunityGroups.updateGroup(this);
     }
 
     // print members

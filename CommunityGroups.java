@@ -3,14 +3,11 @@ import java.util.*;
 
 public class CommunityGroups {
 
-        // public static List<VillageGroup> villageGroups = new ArrayList<>();
         public static List<VillageGroup> villageGroups = deserializeGroups();
 
         public static void initialize() {
-                // initialize groups to randomGroups
-                villageGroups = defaultGroups();
                 // serialize groups
-                serializeGroups();
+                serializeGroups(defaultGroups());
         }
 
         // random groups
@@ -103,7 +100,7 @@ public class CommunityGroups {
                 printGroups(villageGroups);
 
                 // Read the user's choice
-                AppConstants.print("\nSelect a group you want to join (1-" + villageGroups.size() + "):  ", "yellow");
+                AppConstants.print("\nSelect a group you want to Join (1-" + villageGroups.size() + "):  ", "white");
 
                 int groupChoice = scanner.nextInt();
 
@@ -153,20 +150,19 @@ public class CommunityGroups {
         }
 
         // Serialization method to store user object
-        public static void serializeGroups() {
-                AppConstants.println("Serializing User Account...", "blue");
+        public static void serializeGroups(List<VillageGroup> villageGroups) {
+                AppConstants.println("Serializing Groups...", "blue");
                 printAllGroups();
 
                 try {
-                        // String fileName = this.name.toLowerCase() + ".ser";
-                        FileOutputStream fileOut = new FileOutputStream(AppConstants.USER_FILE_NAME);
+                        FileOutputStream fileOut = new FileOutputStream(AppConstants.GROUP_FILE_NAME);
 
                         // check if file is empty and then write else append
                         if (fileOut.getChannel().position() == 0) {
                                 ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
                                 objectOut.writeObject(villageGroups);
                                 objectOut.close();
-                                AppConstants.println("Groups serialized successfully.");
+                                AppConstants.printSuccess("Groups serialized successfully.");
 
                         } else {
                                 // do nothing
@@ -177,7 +173,7 @@ public class CommunityGroups {
                         e.printStackTrace();
                 }
 
-                AppConstants.println("\nNew User Account...", "blue");
+                AppConstants.println("\nNew groups...", "blue");
                 printAllGroups();
         }
 
@@ -193,7 +189,7 @@ public class CommunityGroups {
                         return villageGroups;
                 } catch (IOException | ClassNotFoundException e) {
                         // e.printStackTrace();
-                        AppConstants.println("Error: User Account File doesn't exist!", "red");
+                        AppConstants.printError("> Error: Group File doesn't exist!");
                         return new ArrayList<>();
                 }
         }
@@ -204,13 +200,25 @@ public class CommunityGroups {
 
                 // check if list is empty
                 if (groupList == null || groupList.size() == 0) {
-                        AppConstants.println("No groups found!", "red");
+                        AppConstants.printError("No groups found!");
                 } else {
                         // print all users
                         for (VillageGroup group : groupList) {
                                 AppConstants.println(group.toString(), "blue");
                         }
                 }
+        }
+
+        public static void updateGroup(VillageGroup villageGroup) {
+                // this method updates the group object in the list
+                // get the index of the group
+                int index = villageGroups.indexOf(villageGroup);
+
+                // update the group
+                villageGroups.set(index, villageGroup);
+
+                // serialize the updated group
+                serializeGroups(villageGroups);
         }
 
 }

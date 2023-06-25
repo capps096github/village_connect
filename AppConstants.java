@@ -47,6 +47,11 @@ public class AppConstants {
         String colorCode = getANSIColorCode("yellow");
         System.out.print(colorCode + text + ANSI_RESET);
     }
+    // this is for printing without a new line
+    public static void printSuccess(String text) {
+        String colorCode = getANSIColorCode("green");
+        System.out.print(colorCode + text + ANSI_RESET);
+    }
 
     // this is for printing without a new line
     public static void print(String text, String color) {

@@ -44,7 +44,7 @@ public class ChatUser extends VillageUser {
             producer.send(message);
 
             // print the message
-            AppConstants.println("\n> Message Sent at [" + time + "] by " + sender + ": " + messageText, "green");
+            AppConstants.printSuccess("\n> Message Sent at [" + time + "] by " + sender + ": " + messageText);
 
         } catch (Exception e) {
             AppConstants.println("Caught: " + e, "red");
