@@ -29,23 +29,28 @@ public class ChatUser extends VillageUser {
             AppConstants.print("Type your message or 'exit' to go back to group menu: ");
             messageText = scanner.nextLine();
 
-            // Create a messages
-            TextMessage message = session.createTextMessage(messageText);
+            // check if user wants to exit
+            if (messageText.equalsIgnoreCase("exit")) {
+                // go back to group menu
 
-            // message details
-            String sender = name;
-            String time = AppConstants.getCurrentTime();
+            } else {
+                // Create a messages
+                TextMessage message = session.createTextMessage(messageText);
 
-            // set the message properties
-            message.setStringProperty("sender", sender);
-            message.setStringProperty("time", time);
+                // message details
+                String sender = name;
+                String time = AppConstants.getCurrentTime();
 
-            // send the message using producer
-            producer.send(message);
+                // set the message properties
+                message.setStringProperty("sender", sender);
+                message.setStringProperty("time", time);
 
-            // print the message
-            AppConstants.printSuccess("\n> Message Sent at [" + time + "] by " + sender + ": " + messageText);
+                // send the message using producer
+                producer.send(message);
 
+                // print the message
+                AppConstants.printSuccess("\n> Message Sent at [" + time + "] by " + sender + ": " + messageText);
+            }
         } catch (Exception e) {
             AppConstants.println("Caught: " + e, "red");
         }

@@ -99,8 +99,11 @@ public class CommunityGroups {
 
                 printGroups(villageGroups);
 
+                // go back to main menu
+                AppConstants.print("0. Back to Main Menu\n", "white");
+
                 // Read the user's choice
-                AppConstants.print("\nSelect a group you want to Join (1-" + villageGroups.size() + "):  ", "white");
+                AppConstants.print("\nSelect a group you want to Join (1 -" + villageGroups.size() + "):  ", "white");
 
                 int groupChoice = scanner.nextInt();
 
@@ -113,15 +116,25 @@ public class CommunityGroups {
                         // Add the user to the group
                         selectedGroup.addUser(existingUser.name);
 
+                        //! Update the group
+                        CommunityGroups.updateGroup(selectedGroup);
+
                         // Show the group menu
                         selectedGroup.showMenu();
 
+                } else if (groupChoice == 0) {
+                        // Select the group
+                        VillageGroup selectedGroup = villageGroups.get(groupChoice - 1);
+                        //! Update the group
+                        CommunityGroups.updateGroup(selectedGroup);
+
+                        // go back to main menu
+                        AppConstants.println("\nGoing back to Main Menu...", "blue");
+                        AppLogic.mainMenu();
                 } else {
                         AppConstants.printError("Invalid choice!");
+                        selectGroup();
                 }
-
-                // close scanner
-                // scanner.close();
 
         }
 
@@ -209,7 +222,9 @@ public class CommunityGroups {
                 }
         }
 
-        public static void updateGroup(VillageGroup villageGroup, int index) {
+        public static void updateGroup(VillageGroup villageGroup) {
+                // get the index of the group
+                int index = villageGroups.indexOf(villageGroup);
 
                 // update the group
                 villageGroups.set(index, villageGroup);

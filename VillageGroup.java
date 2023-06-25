@@ -38,21 +38,19 @@ public class VillageGroup implements Serializable {
     }
 
     // join group adds user id to members list if they don't already exist
-    public void addUser(String userId, int groupIndex) {
+    public void addUser(String userId) {
         if (!this.members.contains(userId)) {
             this.members.add(userId);
         }
-        // update the group
-        CommunityGroups.updateGroup(this, groupIndex);
+
     }
 
     // leave group removes user id from members list if they exist
-    public void removeUser(String userName, int groupIndex) {
+    public void removeUser(String userName) {
         if (this.members.contains(userName)) {
             this.members.remove(userName);
         }
-        // update the group
-        CommunityGroups.updateGroup(this, groupIndex);
+
     }
 
     // Show group menu function, takes in the selected group and displays the menu
@@ -133,7 +131,7 @@ public class VillageGroup implements Serializable {
             String exit = scanner.next();
 
             // if user types exit, go back to menu
-            if (exit.equals("exit")) {
+            if (exit.equalsIgnoreCase("exit")) {
                 showMenu();
             } else {
                 AppConstants.println("\n> Still Waiting for other messages from " + groupName + "...");
@@ -171,8 +169,6 @@ public class VillageGroup implements Serializable {
     // add message and print other messages
     public void addMessage(String message) {
         messages.add(message);
-        // update the group
-        CommunityGroups.updateGroup(this);
     }
 
     // print members

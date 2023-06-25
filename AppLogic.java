@@ -83,7 +83,7 @@ public class AppLogic {
         }
 
         // close the scanner
-        // scanner.close();
+        scanner.close();
 
     }
 
