@@ -38,21 +38,21 @@ public class VillageGroup implements Serializable {
     }
 
     // join group adds user id to members list if they don't already exist
-    public void addUser(String userId) {
+    public void addUser(String userId, int groupIndex) {
         if (!this.members.contains(userId)) {
             this.members.add(userId);
         }
         // update the group
-        CommunityGroups.updateGroup(this);
+        CommunityGroups.updateGroup(this, groupIndex);
     }
 
     // leave group removes user id from members list if they exist
-    public void removeUser(String userName) {
+    public void removeUser(String userName, int groupIndex) {
         if (this.members.contains(userName)) {
             this.members.remove(userName);
         }
         // update the group
-        CommunityGroups.updateGroup(this);
+        CommunityGroups.updateGroup(this, groupIndex);
     }
 
     // Show group menu function, takes in the selected group and displays the menu

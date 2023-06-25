@@ -209,10 +209,7 @@ public class CommunityGroups {
                 }
         }
 
-        public static void updateGroup(VillageGroup villageGroup) {
-                // this method updates the group object in the list
-                // get the index of the group
-                int index = villageGroups.indexOf(villageGroup);
+        public static void updateGroup(VillageGroup villageGroup, int index) {
 
                 // update the group
                 villageGroups.set(index, villageGroup);
