@@ -5,7 +5,11 @@ public class AppConstants {
     // file name for serialization/deserialization
     // this will be stored in db/user.ser file
 
-    public static final String USER_FILE_NAME = "db/user.ser";
+    public static final String USER_FILE_NAME = "db/users.ser";
+    public static final String GROUP_FILE_NAME = "db/groups.ser";
+
+    // broker url for ActiveMQ
+    public static final String BROKER_URL = "tcp://localhost:61616";
 
     // Color codes
     private static final String ANSI_RESET = "\u001B[0m";
@@ -24,6 +28,11 @@ public class AppConstants {
     // prints the string with a color specified by the user
     public static void println(String text, String color) {
         String colorCode = getANSIColorCode(color);
+        System.out.println(colorCode + text + ANSI_RESET);
+    }
+    // prints the string with a color specified by the user
+    public static void printError(String text) {
+        String colorCode = getANSIColorCode("red");
         System.out.println(colorCode + text + ANSI_RESET);
     }
 

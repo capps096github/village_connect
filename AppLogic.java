@@ -51,6 +51,10 @@ public class AppLogic {
     // menu
     public static void mainMenu() throws Exception {
 
+        // initialize community groups first
+        CommunityGroups.initialize();
+
+        // then show menu
         AppConstants.println("\nWhat would you like to do?\n", "white");
         AppConstants.println("1. View Village Groups");
         AppConstants.println("2. Create a Village Group");

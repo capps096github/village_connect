@@ -1,10 +1,11 @@
+import java.io.Serializable;
 import java.util.*;
 
 import javax.jms.*;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
-public class VillageGroup {
+public class VillageGroup implements Serializable {
     // name
     public String name;
     // description
@@ -57,24 +58,25 @@ public class VillageGroup {
         // group name
         String groupName = this.name;
 
-        AppConstants.println("\n\nWelcome to " + this.name + " Group!\n", "white");
-        AppConstants.println("Description:\n" + this.description, "blue");
+        AppConstants.println("\n\nWelcome to " + groupName + " Group!\n", "yellow");
+        AppConstants.println("Description:\n" + this.description, "cyan");
 
         // Display the menu options
-        AppConstants.println("\nHere are some options to get you started:", "white");
+        AppConstants.println("\nHere are some options to get you started with The " + this.name + " Group!\n", "white");
         AppConstants.println("1. View Members " + groupName);
         AppConstants.println("2. Send a Message to " + groupName);
-        AppConstants.println("3. Exit the program");
+        AppConstants.println("3. Listen to Messages from " + groupName);
+        AppConstants.println("4. Log Out");
 
         // Read the user's choice
-        AppConstants.print("\nEnter your choice (1-3): ", "white");
+        AppConstants.print("\nEnter your choice (1-4): ", "white");
         int choice = scanner.nextInt();
 
         // curremnt user
         VillageUser currentUser = AppConstants.currentUser;
 
         // Create a ConnectionFactory
-        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("vm://localhost");
+        ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(AppConstants.BROKER_URL);
 
         // Create a Connection
         Connection connection = connectionFactory.createConnection();
@@ -92,37 +94,36 @@ public class VillageGroup {
         // logic for the menu
         if (choice == 1) {
             // view members
-            // printMembers();
-            // showMenu();
-
-            // print messages
-            // let the user send a message
-            chatUser.viewMessages(session, destination);
-
+            printMembers();
+            showMenu();
         } else if (choice == 2) {
-            // print messages
-            printMessages();
-
-            // send a message
-            AppConstants.println("\nSend a message to " + groupName);
-
-            // logic for sending a message to the group
-            // logic for sending a message to the group
-            System.out.print("\nType a message you would like to send to (type 'exit' to go back to the menu)? ");
-            String message = scanner.nextLine();
-
-            if (message.equalsIgnoreCase("exit")) {
-                showMenu(); // Exit the loop and go back to the menu
-            } else {
+            String message;
+            do { // send a message
+                AppConstants.println("\n> Send a message to " + groupName);
 
                 // let the user send a message
-                chatUser.sendMessage();
+                message = chatUser.sendMessage();
 
                 addMessage(message);
+            } while (message != "exit");
 
-            }
+            // close session and go to Menu
+            // Clean up
+            session.close();
+            connection.close();
+            
+            // go back to menu
+            showMenu();
 
         } else if (choice == 3) {
+            // print messages
+            printMessages();
+            // view and listen to messages sent to the group
+            chatUser.viewMessages();
+
+            AppConstants.println("\n> Waiting for other messages from " + groupName + "...");
+            exitToMenu();
+        } else if (choice == 4) {
             // exit
             System.exit(0);
         } else {
@@ -132,10 +133,22 @@ public class VillageGroup {
 
     }
 
+    public void exitToMenu() throws Exception {
+        // tell user to type exit to go back to menu
+        AppConstants.println("\nCan't wait anymore? Type 'exit' to go back to group menu", "red");
+        String exit = scanner.next();
+
+        // if user types exit, go back to menu
+        if (exit.equals("exit")) {
+            showMenu();
+        } else {
+
+        }
+    }
+
     // add message and print other messages
     public void addMessage(String message) {
         messages.add(message);
-        printMessages();
     }
 
     // print members
@@ -148,11 +161,13 @@ public class VillageGroup {
 
     // print messages
     public void printMessages() {
-        AppConstants.println("\n** " + this.name + "Message Threads **\n");
+        AppConstants.println("\n** " + this.name + " Messages **\n");
         for (int i = 0; i < this.messages.size(); i++) {
             AppConstants.println("-" + this.messages.get(i), "cyan");
         }
 
         System.out.println("\n");
     }
+
+    //
 }

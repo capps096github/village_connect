@@ -2,12 +2,10 @@ import java.util.Scanner;
 
 import javax.jms.*;
 
-
 public class ChatUser extends VillageUser {
     private Session session;
     private Topic chatTopic;
     private MessageProducer producer;
-    private MessageConsumer consumer;
 
     public ChatUser(String name, String password, Session session, Topic chatTopic) throws JMSException {
         super(password, name);
@@ -19,47 +17,77 @@ public class ChatUser extends VillageUser {
         producer = session.createProducer(chatTopic);
         producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
-        // Create the message consumer
-        consumer = session.createConsumer(chatTopic);
-        consumer.setMessageListener(new MessageListener() {
-            public void onMessage(Message message) {
-                try {
-                    if (message instanceof TextMessage) {
-                        TextMessage textMessage = (TextMessage) message;
-                        System.out.println(name + " received a message: " + textMessage.getText());
-                    }
-                } catch (JMSException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
 
-    
-
     // send and receive messages via activemq
-    public void sendMessage() {
+    public String sendMessage() {
+        String messageText = "";
         try {
-       
+
             // Ask user to type a message
             Scanner scanner = new Scanner(System.in);
-            AppConstants.print("Type your message: ");
-            String messageText = scanner.nextLine();
+            AppConstants.print("Type your message or 'exit' to go back to group menu: ");
+            messageText = scanner.nextLine();
 
             // Create a messages
-            // String text = "Hello world! From: " + Thread.currentThread().getName() + " :
-            // ";
             TextMessage message = session.createTextMessage(messageText);
+
+            // message details
+            String sender = name;
+            String time = AppConstants.getCurrentTime();
+
+            // set the message properties
+            message.setStringProperty("sender", sender);
+            message.setStringProperty("time", time);
 
             // send the message using producer
             producer.send(message);
 
-            // Clean up
-            session.close();
-            scanner.close();
+            // print the message
+            AppConstants.println("\n> Message Sent at [" + time + "] by " + sender + ": " + messageText, "green");
+
         } catch (Exception e) {
             AppConstants.println("Caught: " + e, "red");
-            // e.printStackTrace();
         }
+
+        // return the message
+        return messageText;
     }
+
+    // this is used to listen to messages from the topic
+    public void viewMessages() {
+
+        try {
+
+            MessageConsumer consumer = session.createConsumer(chatTopic);
+
+            consumer.setMessageListener(new MessageListener() {
+                public void onMessage(Message message) {
+                    try {
+                        if (message instanceof TextMessage) {
+                            TextMessage textMessage = (TextMessage) message;
+                            // message details like sender, time, message
+                            String sender = textMessage.getStringProperty("sender");
+                            String time = textMessage.getStringProperty("time");
+                            String messageText = textMessage.getText();
+
+                            // print the message
+                            AppConstants.println("\n> [" + time + "] @" + sender + " sent: " + messageText, "cyan");
+
+                            AppConstants.println("> @" + name + " (you) received: " + textMessage.getText(),
+                                    "green");
+                        }
+                    } catch (JMSException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            AppConstants.println("Caught: " + e, "red");
+
+        }
+
+    }
+
 }

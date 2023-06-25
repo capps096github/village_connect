@@ -1,10 +1,6 @@
 import java.io.*;
 import java.util.Scanner;
 
-import javax.jms.*;
-
-import org.apache.activemq.ActiveMQConnectionFactory;
-
 public class VillageUser implements Serializable {
     // user password
     public String password;
@@ -56,7 +52,6 @@ public class VillageUser implements Serializable {
             createAccount();
         }
 
-        // scanner.close();
     }
 
     // create account method
@@ -76,66 +71,13 @@ public class VillageUser implements Serializable {
         // update the current user
         AppConstants.currentUser = newUser;
 
-        // add user to the list of users
-
         // serialize the user
         AppUsers.serializeUsers(newUser);
-
-        // close the scanner
-        // scanner.close();
 
         // Print success message
         AppConstants.println("Account created successfully!", "green");
         // User exists
         AppConstants.println("\n\nWelcome, " + newUser.name.toUpperCase() + " to VillageConnect!\n");
-
-        // * call the main menu
-
-    }
-
-    // public void viewMessages(String groupName) {
-    public void viewMessages(Session session, Topic destination) {
-
-        try {
-
-            MessageConsumer consumer = session.createConsumer(destination);
-
-            // Message message = consumer.receive(1000);
-
-            // if (message instanceof TextMessage) {
-            // TextMessage textMessage = (TextMessage) message;
-            // String text = textMessage.getText();
-            // System.out.println("Received: " + text);
-            // } else {
-            // System.out.println("Received: " + message);
-            // }
-            consumer.setMessageListener(new MessageListener() {
-                public void onMessage(Message message) {
-                    try {
-                        if (message instanceof TextMessage) {
-                            TextMessage textMessage = (TextMessage) message;
-                            // message details like sender, time, message
-                            String sender = textMessage.getStringProperty("sender");
-                            String time = textMessage.getStringProperty("time");
-                            String messageText = textMessage.getText();
-
-                            // print the message
-                            AppConstants.println("[" + time + "] " + sender + ": " + messageText,
-                                    "green");
-
-                            AppConstants.println(name + " received a message: " + textMessage.getText(),
-                                    "green");
-                        }
-                    } catch (JMSException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-        } catch (Exception e) {
-            AppConstants.println("Caught: " + e, "red");
-
-        }
 
     }
 

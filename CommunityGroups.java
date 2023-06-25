@@ -1,10 +1,17 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class CommunityGroups {
 
-        public static List<VillageGroup> villageGroups = new ArrayList<>();
+        // public static List<VillageGroup> villageGroups = new ArrayList<>();
+        public static List<VillageGroup> villageGroups = deserializeGroups();
+
+        public static void initialize() {
+                // initialize groups to randomGroups
+                villageGroups = defaultGroups();
+                // serialize groups
+                serializeGroups();
+        }
 
         // random groups
         public static List<VillageGroup> defaultGroups() {
@@ -63,20 +70,21 @@ public class CommunityGroups {
                 Scanner scanner = new Scanner(System.in);
 
                 // Create a Group
-                System.out.print("\nWhat is the name of the new group? e.g Chairmanz Group:  ");
+                AppConstants.print("\nWhat is the name of the new group? e.g Chairmanz Group:  ");
                 String groupName = scanner.nextLine();
 
-                System.out.print(
+                AppConstants.print(
                                 "\nWhat is the description of the new group? e.g Chairman's group:  ");
                 String groupDescription = scanner.nextLine();
 
-                System.out.print("\nWho is the admin of the new group? e.g Admin1:  ");
+                AppConstants.print("\nWho is the admin of the new group? e.g Admin1:  ");
                 String groupAdmin = scanner.nextLine();
 
                 VillageGroup newGroup = new VillageGroup(groupName, groupDescription, groupAdmin);
 
-                villageGroups.add(newGroup);
-                System.out.println("\nNew group created: " + newGroup.toString() + "\n");
+                // serialize the new group
+                serializeThisGroup(newGroup);
+                AppConstants.println("\nNew group created: " + newGroup.toString() + "\n", "green");
 
                 // close scanner and exit
                 scanner.close();
@@ -86,14 +94,11 @@ public class CommunityGroups {
         }
 
         // select a group
-        public static void selectGroup() throws Exception{
+        public static void selectGroup() throws Exception {
                 Scanner scanner = new Scanner(System.in);
 
                 // Print the list of groups
                 AppConstants.println("\n\nVillage Connect Available Groups:\n", "white");
-
-                // initialize groups to randomGroups
-                villageGroups = defaultGroups();
 
                 printGroups(villageGroups);
 
@@ -114,13 +119,98 @@ public class CommunityGroups {
                         // Show the group menu
                         selectedGroup.showMenu();
 
-                }else {
-                        System.out.println("Invalid choice!");
+                } else {
+                        AppConstants.printError("Invalid choice!");
                 }
 
                 // close scanner
                 // scanner.close();
 
+        }
+
+        // Serialization method to store user object
+        public static void serializeThisGroup(VillageGroup group) {
+                AppConstants.println("Serializing User Account...", "blue");
+                printAllGroups();
+
+                // add the user to the list
+                villageGroups.add(group);
+
+                try {
+                        // String fileName = this.name.toLowerCase() + ".ser";
+                        FileOutputStream fileOut = new FileOutputStream(AppConstants.USER_FILE_NAME);
+                        ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+                        objectOut.writeObject(villageGroups);
+                        objectOut.close();
+                        fileOut.close();
+                        // AppConstants.println("User serialized successfully.");
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+
+                // AppConstants.println("\nNew User Account...", "blue");
+                // printAllUsers();
+        }
+
+        // Serialization method to store user object
+        public static void serializeGroups() {
+                AppConstants.println("Serializing User Account...", "blue");
+                printAllGroups();
+
+                try {
+                        // String fileName = this.name.toLowerCase() + ".ser";
+                        FileOutputStream fileOut = new FileOutputStream(AppConstants.USER_FILE_NAME);
+
+                        // check if file is empty and then write else append
+                        if (fileOut.getChannel().position() == 0) {
+                                ObjectOutputStream objectOut = new ObjectOutputStream(fileOut);
+                                objectOut.writeObject(villageGroups);
+                                objectOut.close();
+                                AppConstants.println("Groups serialized successfully.");
+
+                        } else {
+                                // do nothing
+                        }
+
+                        fileOut.close();
+                } catch (IOException e) {
+                        e.printStackTrace();
+                }
+
+                AppConstants.println("\nNew User Account...", "blue");
+                printAllGroups();
+        }
+
+        // Deserialization method to obtain user object
+        public static List<VillageGroup> deserializeGroups() {
+
+                try {
+                        FileInputStream fileIn = new FileInputStream(AppConstants.GROUP_FILE_NAME);
+                        ObjectInputStream objectIn = new ObjectInputStream(fileIn);
+                        villageGroups = (List<VillageGroup>) objectIn.readObject();
+                        objectIn.close();
+                        fileIn.close();
+                        return villageGroups;
+                } catch (IOException | ClassNotFoundException e) {
+                        // e.printStackTrace();
+                        AppConstants.println("Error: User Account File doesn't exist!", "red");
+                        return new ArrayList<>();
+                }
+        }
+
+        // print all users
+        public static void printAllGroups() {
+                List<VillageGroup> groupList = deserializeGroups();
+
+                // check if list is empty
+                if (groupList == null || groupList.size() == 0) {
+                        AppConstants.println("No groups found!", "red");
+                } else {
+                        // print all users
+                        for (VillageGroup group : groupList) {
+                                AppConstants.println(group.toString(), "blue");
+                        }
+                }
         }
 
 }

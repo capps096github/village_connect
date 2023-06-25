@@ -1,10 +1,5 @@
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.*;
+import java.util.*;
 
 public class AppUsers {
     // public static List<VillageUser> userList = new ArrayList<>();
@@ -12,8 +7,8 @@ public class AppUsers {
 
     // Serialization method to store user object
     public static void serializeUsers(VillageUser user) {
-        AppConstants.println("Serializing User Account...", "blue");
-        printAllUsers();
+        // AppConstants.println("Serializing User Account...", "blue");
+        // printAllUsers();
 
         // add the user to the list
         userList.add(user);
@@ -30,8 +25,8 @@ public class AppUsers {
             e.printStackTrace();
         }
 
-        AppConstants.println("\nNew User Account...", "blue");
-        printAllUsers();
+        // AppConstants.println("\nNew User Account...", "blue");
+        // printAllUsers();
     }
 
     // Deserialization method to obtain user object
