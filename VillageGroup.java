@@ -75,7 +75,7 @@ public class VillageGroup implements Externalizable {
         AppConstants.println("5. Go Back to Main Menu");
 
         // Read the user's choice
-        AppConstants.print("\nEnter your choice (1-4): ", "white");
+        AppConstants.print("\nEnter your choice (1-5): ", "white");
         int choice = scanner.nextInt();
 
         // curremnt user
@@ -150,7 +150,7 @@ public class VillageGroup implements Externalizable {
             removeUser(name);
 
             // leave group
-            AppConstants.printError("\n> @" + name + " (you) Left " + groupName + " Group...\n\n");
+            AppConstants.printError("\n> @" + currentUser.name + " (you) left " + groupName + " Group...\n\n");
 
             // Clean up
             session.close();
