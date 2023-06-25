@@ -82,6 +82,7 @@ public class AppConstants {
         }
     }
 
+    // get the current time
     public static String getCurrentTime() {
         return new SimpleDateFormat("HH:mm:ss").format(new Date());
     }
