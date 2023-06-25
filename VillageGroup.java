@@ -130,14 +130,16 @@ public class VillageGroup implements Externalizable {
             AppConstants.println("\n> Waiting for other messages from " + groupName + "...");
 
             // tell user to type exit to go back to menu
-            // AppConstants.println("\nCan't wait anymore? Type 'exit' to go back to group menu", "red");
+            // AppConstants.println("\nCan't wait anymore? Type 'exit' to go back to group
+            // menu", "red");
             // String exit = scanner.next();
 
             // if user types exit, go back to menu
             // if (exit.equalsIgnoreCase("exit")) {
-            //     showMenu();
+            // showMenu();
             // } else {
-            //     AppConstants.println("\n> Still Waiting for other messages from " + groupName + "...");
+            // AppConstants.println("\n> Still Waiting for other messages from " + groupName
+            // + "...");
 
             // }
         } else if (choice == 4) {
@@ -146,6 +148,14 @@ public class VillageGroup implements Externalizable {
 
             // remove user from group
             removeUser(name);
+
+            // leave group
+            AppConstants.printError("\n> @" + name + " (you) Left " + groupName + " Group...\n\n");
+
+            // Clean up
+            session.close();
+            connection.close();
+            showMenu();
 
         } else if (choice == 5) {
             // go back to main menu
