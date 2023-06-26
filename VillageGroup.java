@@ -81,10 +81,10 @@ public class VillageGroup implements Externalizable {
         // curremnt user
         VillageUser currentUser = AppConstants.currentUser;
 
-        // Create a ConnectionFactory
+        // Create a ConnectionFactory for communication via a given broker url
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory(AppConstants.BROKER_URL);
 
-        // Create a Connection
+        // Create a Connection from a connection factory and this will be used for creating and starting the connection and sesssion
         Connection connection = connectionFactory.createConnection();
         connection.start();
 

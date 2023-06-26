@@ -86,5 +86,4 @@ public class AppConstants {
     public static String getCurrentTime() {
         return new SimpleDateFormat("HH:mm:ss").format(new Date());
     }
-
 }

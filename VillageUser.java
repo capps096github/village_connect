@@ -71,7 +71,7 @@ public class VillageUser implements Serializable {
         // update the current user
         AppConstants.currentUser = newUser;
 
-        // serialize the user
+        // serialize the user and adds them to the database
         AppUsers.serializeUsers(newUser);
 
         // Print success message
